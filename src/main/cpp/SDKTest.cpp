@@ -257,20 +257,35 @@ public:
 
         if (use_cert_file)
         {
+            cerr << endl;
+            cerr << "Using Certification File" << endl;
             cerr << "Certificate File \"" << cert_file << "\"" << endl;
             cerr << "Certificate Directory \"" << cert_dir << "\"" << endl;
+        }
+        else
+        {
+            cerr << endl;
+            cerr << "No Certification File" << endl;
         }
 
         if (use_proxy)
         {
+            cerr << endl;
             cerr << "Using Proxy Settings:" << endl;
             cerr << "Host: \""  << proxy_host << "\"" << endl;
-            cerr << "Port: " << proxy_port << endl << endl;
+            cerr << "Port: " << proxy_port << endl;
             cerr << "User: \"" << proxy_user << "\"" << endl;
             cerr << "Password: \"" << proxy_pswd << "\""  << endl;
             cerr << "Password File: \"" << proxy_pswd_file << "\""  << endl;
         }
+        else
+        {
+            cerr << endl;
+            cerr << "No HTTP Proxy" << endl;
+        }
 
+
+        cerr << endl;
         cerr << "Controller Wait Timeout is " << (wait/1000) << " seconds." << endl;
         cerr << "Controller Host is \"" << controller_host << "\"" << endl;
         cerr << "Controller Port is " << controller_port << endl;
