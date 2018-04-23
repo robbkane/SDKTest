@@ -8,9 +8,23 @@ The test will register the App/Tier/Node, create a Business Transaction, and mak
 configurable number of seconds between each cycle.  You can also configure the number of threads that simultaneously perform this operation, and 
 the number of cycles each thread performs.  
 
-Review the Makefile, uncommenting and/or assigning those fields that are required.  If you set a parameter, and that parameter has an accompanying
-value that requires a mandatory setting, you'll need to replace the "dummy" setting (beginning with "ERROR_...") with the appropriate information.
-At a minimum you will need to set the Controller Host/Port, and the AccessKey.
+To run the SDKTest, you'll need to also install the Boost 1.66 (or later) libraries, as well as the zlib library.  Follow the instructions provided
+within the Boost and Zlib documentation.  Make sure that the libraries are correctly installed (and where necessary built) on your local machine,
+and that you modify the Makefile to correctly reference them.   You'll also need to install the AppDynamics SDK.  On Windows systems that don't support
+symbolic links, place the AppD SDK in the .../extlibs directory directly.  For Linux operating systems, you should create a symbolic link in the 
+.../extlibs directory called "appdynamics-cpp-sdk" that points to the correct version of the AppDynamics C++ SDK install.  We recommend you use the
+4.4.x or later version.
+
+Note: The SDK directory structure has changed recently.  For 4.3.x release and earlier, you'll need to point the symbolic link to a slightly different
+install structure.  Make the link point to the following: SDK_ROOT = extlibs/appdynamics-sdk-native/sdk_lib
+
+Note: All of the above presumes the use of the "proxy-less" version of the SDK.  This application is not intended for use with the earlier "proxied"
+version.
+
+To use the SDKTest application, first install/build/link the appropriate libraries described above.  Then review the Makefile, uncommenting and/or 
+assigning those fields that are required.  If you set a parameter, and that parameter has an accompanying value that requires a mandatory setting, 
+you'll need to replace the "dummy" setting (beginning with "ERROR_...") with the appropriate information.  At a minimum you will need to set the 
+Controller Host/Port, and the AccessKey.
 
 The following is the list of possible paramters.  Uncomment any that are appropriate, and set their value accordingly:
 
