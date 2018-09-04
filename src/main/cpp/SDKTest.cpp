@@ -421,6 +421,7 @@ int main(int argc, char* argv[])
 
     // There are the command line options.  NOTE: They won't necessarily match the inifile options!!
     cmdline_opts.add_options()
+            (helpToken.c_str(),         po::bool_switch()->default_value(helpInit),          "")
             (noopSDKToken.c_str(),      po::bool_switch()->default_value(noopSDKInit),       "")
             (acctNameToken.c_str(),     po::value<string>()->default_value(acctNameInit),    "")
             (appNameToken.c_str(),      po::value<string>()->default_value(appNameInit),     "")
@@ -452,6 +453,13 @@ int main(int argc, char* argv[])
         po::positional_options_description p;
         po::store(po::command_line_parser(argc, argv).options(cmdline_opts).positional(p).run(), vm);
         po::notify(vm);
+
+        auto display_help =  vm [ (helpToken.substr(0,                 helpToken.find(',')))].as<bool>();
+        if (display_help)
+        {
+            cout << cmdline_opts << "\n";
+            return 1;
+        }
     }
     catch (const std::exception &e)
     {
