@@ -3,7 +3,7 @@
 # Required libraries:
 #
 # boost libs			[www.boost.org, tar xvf tar -xvf boost.tar.bz2 -C /opt/]
-#                       [Used 1.66 on original install.   cd into /opt/boost_1_64_0; ./bootstrap.sh; ./b2 install;]
+#                       [Used 1.66 on original install.   cd into /opt/boost_1_66_0; ./bootstrap.sh; ./b2 install;]
 # zlib					[sudo apt-get install zlib1g-dev]
 #
 

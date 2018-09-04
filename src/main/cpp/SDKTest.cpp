@@ -97,6 +97,7 @@ public:
     static ULONG          limit;
     static ULONG          wait;
     static ULONG          proxy_port;
+    static ULONG          log_level;
     static bool           noop_SDK;
     static bool           use_SSL;
     static bool           use_cert_file;
@@ -157,7 +158,7 @@ public:
         catch (boost::thread_interrupted&)
         {
             cerr << "thread " << this->thread_id_ << " interrupted, aborting" << endl;
-            exit;
+            exit(-1);
         }
 
         return true;
@@ -237,6 +238,7 @@ public:
         term_pause             = vm [ (termPauseToken.substr(0,             termPauseToken.find(',')))].as<ULONG>();
         threads                = vm [ (threadCountToken.substr(0,         threadCountToken.find(',')))].as<ULONG>();
         proxy_port             = vm [ (proxyPortToken.substr(0,             proxyPortToken.find(',')))].as<ULONG>();
+        log_level              = vm [ (logLevelToken.substr(0,               logLevelToken.find(',')))].as<ULONG>();
         noop_SDK               = vm [ (noopSDKToken.substr(0,                 noopSDKToken.find(',')))].as<bool>();
         use_SSL                = vm [ (useSSLToken.substr(0,                   useSSLToken.find(',')))].as<bool>();
         use_cert_file          = vm [ (useCertFileToken.substr(0,         useCertFileToken.find(',')))].as<bool>();
@@ -277,6 +279,7 @@ public:
             cerr << "User: \"" << proxy_user << "\"" << endl;
             cerr << "Password: \"" << proxy_pswd << "\""  << endl;
             cerr << "Password File: \"" << proxy_pswd_file << "\""  << endl;
+            cerr << "LogLevel: \"" << log_level<< "\""  << endl;
         }
         else
         {
@@ -294,7 +297,8 @@ public:
         cerr << "Controller Tier is \"" << tier_name << "\"" << endl;
         cerr << "Controller Node is \"" << node_name << "\"" << endl;
         cerr << "Controller Account Name is \"" << acct_name << "\"" << endl;
-        cerr << "Controller License is \"" << access_key << "\"" << endl;
+        cerr << "Access Key is \"" << access_key << "\"" << endl;
+        cerr << "Logging level is " << log_level << endl;
 
         if (noop_SDK)
         {
@@ -319,6 +323,7 @@ public:
             appd_config_set_controller_account(cfg, acct_name);
             appd_config_set_controller_access_key(cfg, access_key);
             appd_config_set_controller_use_ssl(cfg, use_SSL);
+            appd_config_set_logging_min_level(cfg, (enum appd_config_log_level) log_level);
 
             if (use_cert_file)
             {
@@ -336,7 +341,7 @@ public:
             }
         }
 
-        if (rate_pause < 0 || rate_pause > 1000)
+        if (rate_pause > 1000)
         {
             cerr << "Rate " << rate_pause << " outside range, setting to full speed." << endl;
             rate_pause = 0;
@@ -386,6 +391,7 @@ ULONG          SDKTest::limit;
 ULONG          SDKTest::wait;
 ULONG          SDKTest::controller_port;
 ULONG          SDKTest::proxy_port;
+ULONG          SDKTest::log_level;
 bool           SDKTest::use_cert_file;
 bool           SDKTest::use_proxy;
 bool           SDKTest::noop_SDK;
@@ -415,7 +421,8 @@ int main(int argc, char* argv[])
 
     // There are the command line options.  NOTE: They won't necessarily match the inifile options!!
     cmdline_opts.add_options()
-            (noopSDKToken.c_str(),      po::bool_switch()->default_value(noopSDKInit),        "")
+            (helpToken.c_str(),         po::bool_switch()->default_value(helpInit),          "")
+            (noopSDKToken.c_str(),      po::bool_switch()->default_value(noopSDKInit),       "")
             (acctNameToken.c_str(),     po::value<string>()->default_value(acctNameInit),    "")
             (appNameToken.c_str(),      po::value<string>()->default_value(appNameInit),     "")
             (cyclesToken.c_str(),       po::value<ULONG>()->default_value(cyclesInit),       "")
@@ -436,6 +443,7 @@ int main(int argc, char* argv[])
             (proxyUserToken.c_str(),    po::value<string>()->default_value(proxyUserInit),   "")
             (proxyPswdToken.c_str(),    po::value<string>()->default_value(proxyPswdInit),   "")
             (proxyFileToken.c_str(),    po::value<string>()->default_value(proxyFileInit),   "")
+            (logLevelToken.c_str(),     po::value<ULONG>()->default_value(logLevelInit),     "")
             (termPauseToken.c_str(),    po::value<ULONG>()->default_value(termPauseInit),    "")
             (ratePauseToken.c_str(),    po::value<ULONG>()->default_value(ratePauseInit),    "")
             ;
@@ -445,6 +453,13 @@ int main(int argc, char* argv[])
         po::positional_options_description p;
         po::store(po::command_line_parser(argc, argv).options(cmdline_opts).positional(p).run(), vm);
         po::notify(vm);
+
+        auto display_help =  vm [ (helpToken.substr(0,                 helpToken.find(',')))].as<bool>();
+        if (display_help)
+        {
+            cout << cmdline_opts << "\n";
+            return 1;
+        }
     }
     catch (const std::exception &e)
     {

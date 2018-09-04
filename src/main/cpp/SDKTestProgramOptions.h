@@ -88,6 +88,12 @@ const string       proxyPswdInit("ERROR_HTTP_PROXY_PASSWORD_MISSING");										
 const string       proxyFileToken("HTTPProxyFile");
 const string       proxyFileInit("ERROR_HTTP_PROXY_FILE_MISSING");												// This must be NULL, only ever specified by user override.
 
+const string       logLevelToken("LogLevel");
+const ULONG        logLevelInit(0);
+
+const string       helpToken("help");
+const bool         helpInit(false);
+
 
 #endif // SDK_REGRESSTION_TEST_PROGRAM_OPTIONS_H
 // end of file sdk_regression_test_program_options.h
